@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title>Highcharts</title>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script src = "https://code.highcharts.com/highcharts.js"></script>
+</head>
+
+<body>
+<div id = "container" style = "width: 100%; height: 600px; margin: 0 auto"></div>
+<script language = "JavaScript">
+    var set =["MELBOURNE", "CASEY", "GREATER DANDENONG", "HUME", "GREATER GEELONG", "BRIMBANK","LATROBE","FRANKSTON","WHITTLESEA","WYNDHAM"];
+
+    $(function() {
+        var data1 = [];
+        var data2 = [];
+        $.getJSON("https://raw.githubusercontent.com/zhitaop/CCC-Assignment-2-Group-49/master/Web/test.json?token=AL6537A2SX6BZC4J5GC7VTC44ACIE", function (json) {
+            for (var i = 0; i < json.rows.length; i++) {
+                data1.push([json.rows[i].name, json.rows[i].count]);
+            }
+
+            for (var j = 0; j < set.length; j++) {
+                for (i = 0; i < data1.length; i++) {
+                    if (data1[i][0] == set[j]) {
+                        data2.push(data1[i]);
+                    }
+                }
+            }
+            $('#container').highcharts({
+                chart: {
+                    type: "column"
+                },
+                title: {
+                    text: 'Crime Amount VS Twitter Amount by Region'
+                },
+                xAxis: {
+                    categories:set,
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Amount',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+
+                    backgroundColor: (
+                        (Highcharts.theme && Highcharts.theme.legendBackgroundColor) ||
+                        '#FFFFFF'),
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [
+                    {
+                        name: 'Crime Amount',
+                        data: [4107, 3244, 2787, 2587, 2372, 2331, 2004, 1953, 1791, 1727]
+                    },
+                    {
+                        name: 'Twitter Amount',
+                        data: data2
+                    },
+
+                ]
+            });
+        });
+    });
+</script>
+</body>
+
+</html>
