@@ -95,9 +95,10 @@ if lga_area is not False:
         if_key_words = 'yes'
     else:
         if_key_words = 'no'
-    text_info['if_use'] = if_key_words
+    text_info['key_words'] = if_key_words
     # dict2['rows'].append(dict3)
 else:
-    text_info['text'] = 'not use'
+    #read next line
+    #text_info['text'] = 'not use'
 
 # couchdb.save(text_info)
