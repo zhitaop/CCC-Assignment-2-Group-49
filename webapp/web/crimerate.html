@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Crime_Heatmap</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #floating-panel {
+            position: absolute;
+            top: 10px;
+            left: 25%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: 'Roboto', 'sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
+        }
+
+        #floating-panel {
+            background-color: #fff;
+            border: 1px solid #999;
+            left: 25%;
+            padding: 5px;
+            position: absolute;
+            top: 10px;
+            z-index: 5;
+        }
+    </style>
+</head>
+
+<body>
+<div id="floating-panel">
+    <button onclick="ShowHeatmap()">Show Heatmap for Twitter Data</button>
+    <button onclick="CloseHeatmap()">Show Distribution Map for Crime Data</button>
+</div>
+<div id="map"></div>
+<script>
+
+    var map, heatmap;
+    var data1 = [];
+    var data2 = [];
+    var data3 = [];
+
+    function initMap() {
+        /* ARUIN */
+        $.getJSON("https://raw.githubusercontent.com/jessyly/data/master/final_crimerate.json", function (json) {
+            for (var i = 0; i < json.features.length; i++) {
+                data1.push([json.features[i].properties.name, {
+                    "value": json.features[i].properties.value,
+                    "d10_weapons__and__explosives_offences": json.features[i].properties.d10_weapons__and__explosives_offences,
+                    "a20_assault__and__related_offences": json.features[i].properties.a20_assault__and__related_offences,
+                    "a10_homicide__and__related_offences": json.features[i].properties.a10_homicide__and__related_offences,
+                    "b10_arson": json.features[i].properties.b10_arson
+                }]);
+            }
+        });
+        /*{"rows": [{"name": "MELBOURNE", "count": 3598}, ... yes and <= -0.05 */
+        $.getJSON("wrath_tweets.json", function (json1) {
+            for (var i = 0; i < json1.rows.length; i++) {
+                data3.push([json1.rows[i].key,json1.rows[i].value])
+            }
+        });
+        /* "rows": [{"coordinates": [144.96892763, -37.82223602]} yes and <= -0.05*/
+        $.getJSON("wrath_tweets_coords.json", function (json2) {
+            for (var i = 0; i < json2.rows.length; i++) {
+                data2.push({
+                    location: new google.maps.LatLng(json2.rows[i].value[1], json2.rows[i].value[0]),
+                    weight:1
+                });
+            }
+        });
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: {lat: -36.804045371, lng: 144.962203},
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+
+        map.data.setStyle(function (json1) {
+            var suburb1 = json1.getProperty('vic_lga__3');
+            for (i = 0; i < data1.length; i++) {
+
+                if (data1[i][0] == suburb1) {
+                    var crimeRate = data1[i][1][["value"]];
+
+                }
+            }
+            ;
+            var color = crimeRate > 3000 ? '#8B0000' :
+                crimeRate > 2000 ? '#A96360' :
+                    crimeRate > 1000 ? 'rgba(0, 0, 255, 1)' :
+                        crimeRate > 500 ? 'rgba(0, 63, 255, 1)' :
+                            crimeRate > 250 ? 'rgba(0, 127, 255, 1)' :
+                                crimeRate > 0 ? 'rgba(0, 191, 255, 1)' :
+                                    'grey';
+
+            return {
+                fillColor: color,
+                fillOpacity: 0.8,
+                strokeWeight: 1,
+                strokeColor: "grey"
+            };
+        });
+        map.data.loadGeoJson("https://raw.githubusercontent.com/zhitaop/CCC-Assignment-2-Group-49/master/Web/vic_lga_gov.json?token=AL6537CVOLGWIRFR6J2UXA244AESE")
+        map.data.addListener('mouseover', function (event) {
+            map.data.revertStyle();
+            map.data.overrideStyle(event.feature, {strokeWeight: 3, strokeColor: "black"});
+        });
+        map.data.addListener('mouseout', function (event) {
+            map.data.revertStyle();
+        });
+        heatmap = new google.maps.visualization.HeatmapLayer({
+            data: data2,
+            map: map
+        });
+        heatmap.setMap(null);
+
+        infoWindow = new google.maps.InfoWindow;
+        map.data.addListener('click', function (event) {
+
+            var suburb = event.feature.getProperty('vic_lga__3');
+            for (i = 0; i < data1.length; i++) {
+
+                if (data1[i][0] == suburb) {
+                    var suburb_crime_rate = data1[i][1][["value"]];
+                    var d10_weapons__and__explosives_offences = data1[i][1]["d10_weapons__and__explosives_offences"];
+                    var a20_assault__and__related_offences = data1[i][1]["a20_assault__and__related_offences"];
+                    var a10_homicide__and__related_offences = data1[i][1]["a10_homicide__and__related_offences"];
+                    var b10_arson = data1[i][1]['b10_arson'];
+
+                }
+            }
+            for (i = 0; i < data3.length; i++) {
+                if (data3[i][0] == suburb) {
+                    var twitter_amount = data3[i][1];
+                }
+            }
+            var content = "<p class='content' >" + "<strong>Suburb: </strong>" + suburb +
+                "</br> <strong>Total Number of Crime: </strong>" + suburb_crime_rate +
+                "</br> <strong>Weapons and Explosives offences: </strong>" + d10_weapons__and__explosives_offences +
+                "</br> <strong>Assault and Related offences: </strong>" + a20_assault__and__related_offences +
+                "</br> <strong>Homicide and Related_offences: </strong>" + a10_homicide__and__related_offences +
+                "</br> <strong>Arson: </strong>" + b10_arson +
+                "</br> <strong>Total Twitter for Wrath: </strong>" + twitter_amount;
+            infoWindow.setContent(content + "</p>")
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        });
+
+    }
+
+    function ShowHeatmap() {
+        heatmap.setMap(map);
+        map.data.setStyle({
+            fillColor: "transparent",
+            strokeWeight: 1,
+            strokeColor: "grey"
+        });
+    }
+
+
+    function CloseHeatmap() {
+        heatmap.setMap(null);
+        map.data.setStyle(function (json1) {
+            var suburb1 = json1.getProperty('vic_lga__3');
+            for (i = 0; i < data1.length; i++) {
+
+                if (data1[i][0] == suburb1) {
+                    var crimeRate = data1[i][1][["value"]];
+
+                }
+            }
+            ;
+            var color = crimeRate > 3000 ? '#8B0000' :
+                crimeRate > 2000 ? '#A96360' :
+                    crimeRate > 1000 ? 'rgba(0, 0, 255, 1)' :
+                        crimeRate > 500 ? 'rgba(0, 63, 255, 1)' :
+                            crimeRate > 250 ? 'rgba(0, 127, 255, 1)' :
+                                crimeRate > 0 ? 'rgba(0, 191, 255, 1)' :
+                                    'grey';
+
+            return {
+                fillColor: color,
+                fillOpacity: 0.8,
+                strokeWeight: 1,
+                strokeColor: "grey"
+            };
+        });
+    }
+
+
+</script>
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA47QOWj9aThIeLegm01qqpM64vajN4JqM&libraries=visualization&callback=initMap">
+</script>
+</body>
+</html>
