@@ -1,6 +1,12 @@
 # CCC-Assignment-2-Group-49
 
-This is the repository for Assignment 2 of COMP90024 Cluster and Cloud Computing Assignment 2, group 49.
+This is the repository for Assignment 2 of COMP90024 Cluster and Cloud Computing Assignment 2, group 49.  
+Members:  
+Aijia Yang 957285  
+Guojun Han 905114  
+Yi Lu 917371  
+Yumika Suzuki 1011143  
+Zhitao Pan 844505  
 
 To deploy the system, follow the steps:
 * Clone this repository and go to the deployment folder
