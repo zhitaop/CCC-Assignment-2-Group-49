@@ -1,3 +1,12 @@
+'''
+Team 49
+# Aijia Yang 957285
+# Guojun Han 905114
+# Yi Lu 917371
+# Yumika Suzuki 1011143
+# Zhitao Pan 844505
+'''
+
 import couchdb
 import os
 import re
