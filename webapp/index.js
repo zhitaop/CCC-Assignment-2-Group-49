@@ -21,6 +21,10 @@ app.use(express.static(path.join(__dirname, 'static')));
 
 // {rows: [{name: 'city', count: num}, ...]}  {rows: [{coordinates: [x,y]}, ...]}
 
+app.get('/index.html', (req, res) => {
+    res.redirect('/');
+})
+
 app.get('/',function(req, resp){
     request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
         if (err) {console.log(err);}
