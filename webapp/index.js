@@ -25,17 +25,17 @@ app.get('/',function(req, resp){
     request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
         if (err) {console.log(err);}
         
-        fs.writeFileSync('web/wrath_tweets.json', body)
+        fs.writeFileSync('static/wrath_tweets.json', body)
 
         request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?reduce=false', (err, res, body)=>{
             
-            fs.writeFileSync('web/wrath_tweets_coords.json', body)
+            fs.writeFileSync('static/wrath_tweets_coords.json', body)
             let wrathCount = JSON.parse(body).total_rows;    
             console.log('Wrath sum~~~~:', wrathCount);
 
             request('http://localhost:5984/'+processed_dbname+'/_design/sentiment/_view/sentiment?group=true', (err, res, body)=>{
 
-                fs.writeFileSync('web/sentiment.json', body)
+                fs.writeFileSync('static/sentiment.json', body)
                 console.log(body)
                 })
 
