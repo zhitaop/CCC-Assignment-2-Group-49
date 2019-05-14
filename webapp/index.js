@@ -17,79 +17,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use(express.static(path.join(__dirname, 'web')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 // {rows: [{name: 'city', count: num}, ...]}  {rows: [{coordinates: [x,y]}, ...]}
-app.get('/s',function(req, res){
-    
-    res.sendFile(path.join(__dirname, '/web/index.html'));
-});
-app.get('/get',function(req, resp){
-    request('http://localhost:5984/twitter_processed/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
-        if (err) {console.log(err);}
 
-        request('http://localhost:5984/twitter_processed/_design/wrath/_view/wrath_tweets?reduce=false', (err, res, body)=>{
-            
-            body = JSON.parse(body)
-            let coords = [];
-            for (let row of body.rows) {
-                coords.push(row.value);
-            }
-            //console.log('Wrath sum1:', body.total_rows);
-            //console.log(coords)    
-    })
-
-
-        data = JSON.parse(body)
-        let sum = 0
-        for (let row of data.rows) {
-            sum += row.value
-        }
-        data.total_count = sum;
-        console.log('Wrath sum~~~~:', sum);
-
-        fs.writeFileSync('web/wrathTweets.json', JSON.stringify(data))
-
-        //rese.json(data)
-
-        request('http://localhost:5984/twitter_processed/_design/negative/_view/negative_score?group=true', (err, res, body)=>{
-            if (err) {console.log(err);}
-    
-            data = JSON.parse(body)
-            let sum = 0
-            for (let row of data.rows) {
-                sum += row.value
-            }
-            console.log('negative sum~~~~:', sum);
-            data.total_count = sum;
-    
-            fs.writeFileSync('web/negative_Tweets.json', JSON.stringify(data))
-    
-            request('http://localhost:5984/twitter_data', (err, res, body) => {
-                if (err) console.log(err)
-
-                //console.log(res)
-                console.log(JSON.parse(body).doc_count);
-
-                request('http://localhost:5984/twitter_processed', (err, res, body) => {
-                    if (err) console.log(err)
-    
-                    //console.log(res)
-                    console.log(JSON.parse(body).doc_count);
-
-                    resp.sendFile(path.join(__dirname, '/web/index.html'));
-
-                });
-            });
-    
-        });
-
-    });
-
-});
-
-
-app.get('/getview',function(req, resp){
+app.get('/',function(req, resp){
     request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
         if (err) {console.log(err);}
         
