@@ -10,6 +10,7 @@ const portNum = process.env.PORT || 3000;
 
 let dbname = 'twitter_data'
 let processed_dbname = 'twitter_processed'
+let host_name = 'db'
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -26,24 +27,24 @@ app.get('/index.html', (req, res) => {
 })
 
 app.get('/',function(req, resp){
-    request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
+    request('http://'+host_name+':5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?group=true', (err, res, body)=>{
         if (err) {console.log(err);}
         
         fs.writeFileSync('static/wrath_tweets.json', body)
 
-        request('http://localhost:5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?reduce=false', (err, res, body)=>{
+        request('http://'+host_name+':5984/'+processed_dbname+'/_design/wrath/_view/wrath_tweets?reduce=false', (err, res, body)=>{
             
             fs.writeFileSync('static/wrath_tweets_coords.json', body)
             let wrathCount = JSON.parse(body).total_rows;    
             console.log('Wrath sum~~~~:', wrathCount);
 
-            request('http://localhost:5984/'+processed_dbname+'/_design/sentiment/_view/sentiment?group=true', (err, res, body)=>{
+            request('http://'+host_name+':5984/'+processed_dbname+'/_design/sentiment/_view/sentiment?group=true', (err, res, body)=>{
 
                 fs.writeFileSync('static/sentiment.json', body)
                 console.log(body)
                 })
 
-            request('http://localhost:5984/'+processed_dbname+'/_design/negative/_view/negative_score?reduce=false', (err, res, body)=>{
+            request('http://'+host_name+':5984/'+processed_dbname+'/_design/negative/_view/negative_score?reduce=false', (err, res, body)=>{
                 if (err) {console.log(err);}
         
                 data = JSON.parse(body)
@@ -52,14 +53,14 @@ app.get('/',function(req, resp){
         
                 //fs.writeFileSync('web/negative_Tweets.json', JSON.stringify(data))
         
-                request('http://localhost:5984/'+dbname, (err, res, body) => {
+                request('http://'+host_name+':5984/'+dbname, (err, res, body) => {
                     if (err) console.log(err)
     
                     //console.log(res)
                     let totalCount = JSON.parse(body).doc_count;
                     console.log(JSON.parse(body).doc_count);
     
-                    request('http://localhost:5984/'+processed_dbname, (err, res, body) => {
+                    request('http://'+host_name+':5984/'+processed_dbname, (err, res, body) => {
                         if (err) console.log(err)
         
                         //console.log(res)
