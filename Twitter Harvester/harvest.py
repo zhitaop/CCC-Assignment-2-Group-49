@@ -11,8 +11,8 @@ from process_twi import TweetProcesser
 import couchdb
 import create_view
 
-user = 'admin'
-password = 'admin'
+user = 'zhitao'
+password = 'cccgroup49'
 dbname = 'twitter_data'
 processed_dbname = 'twitter_processed'
 
@@ -22,7 +22,8 @@ class TwitterStreamListener(StreamListener):
 
     def __init__(self):
         self.tweet_processer = TweetProcesser(user, password, processed_dbname)
-        self.couchserver = couchdb.Server(f'http://{user}:{password}@127.0.0.1:5984')
+        self.couchserver = couchdb.Server('http://127.0.0.1:5984')
+        #self.couchserver = couchdb.Server(f'http://{user}:{password}@127.0.0.1:5984')
         if dbname in self.couchserver:
             self.db = self.couchserver[dbname]
         else:

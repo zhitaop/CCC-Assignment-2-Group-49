@@ -12,7 +12,8 @@ import os
 class TweetProcesser:
 
     def __init__(self, db_user, db_pw, processed_db_name):
-        self.couchserver = couchdb.Server(f'http://{db_user}:{db_pw}@127.0.0.1:5984')
+        self.couchserver = couchdb.Server('http://127.0.0.1:5984')
+        #self.couchserver = couchdb.Server(f'http://{db_user}:{db_pw}@127.0.0.1:5984')
         if processed_db_name in self.couchserver:
             self.processed_db = self.couchserver[processed_db_name]
         else:
