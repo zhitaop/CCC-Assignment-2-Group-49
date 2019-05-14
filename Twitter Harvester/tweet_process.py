@@ -139,7 +139,7 @@ class TweetProcesser:
             if record['place']['id'] == '01864a8a64df9dc4':
                 coordinate = random.choices(population=lga_coordinates, weights=lga_prob, k=1)[0]
                 return coordinate
-            else:
+            elif record['place']['bounding_box']['coordinates']:
                 coor_list = record['place']['bounding_box']['coordinates'][0]
                 coordinate = np.sum([coor_list[0], coor_list[1], coor_list[2], coor_list[3]], axis=0) / 4
                 return coordinate.tolist()
