@@ -1,0 +1,14 @@
+- name: Add created host address to local file
+  become: yes
+  lineinfile:
+    path: ./hosts
+    line: "{{ item }}"
+    create: yes
+    state: present
+
+  with_items:
+    - '[Host]'
+    - ' {{ os_instance.openstack.public_v4 }}'
+
+#- name: 'Start remote server deployment'
+#  raw: . ./openrc.sh; ansible-playbook -i hosts -u ubuntu --key-file=~/myKey.pem wordpress.yaml

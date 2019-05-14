@@ -6,7 +6,7 @@ const request = require('request');
 const fs = require('fs')
 
 const app = express();
-const portNum = process.env.PORT || 3000;
+const portNum = 3000;
 
 let dbname = 'twitter_data'
 let processed_dbname = 'twitter_processed'

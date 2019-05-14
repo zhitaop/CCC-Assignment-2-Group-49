@@ -1,0 +1,23 @@
+--- 
+
+- name: Create system dropin directory
+  raw: sudo mkdir -p /etc/systemd/system/docker.service.d
+
+- name: Add Http Proxy
+  become: yes
+  lineinfile:
+    path: /etc/systemd/system/docker.service.d/http-proxy.conf
+    line: "{{ item }}"
+    create: yes
+    state: present
+
+  with_items:
+    - '[Service]'
+    - 'Environment="HTTP_PROXY=http://wwwproxy.unimelb.edu.au:8000/"'
+
+
+- name: Flush changes and restart docker
+  raw: sudo systemctl daemon-reload; sudo systemctl restart docker; sudo usermod -a -G docker ubuntu
+ 
+
+    

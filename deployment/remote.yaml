@@ -1,0 +1,16 @@
+
+- hosts: Host
+  vars_files:
+    - host_vars/remote.yaml
+  gather_facts: false
+  
+  pre_tasks:
+    - name: 'Install Python2'
+      raw: sudo apt-get update; sudo apt-get -y install python
+
+  roles:
+   - role: common
+   - role: file-system
+   - role: docker
+   - role: couchdb
+   - role: docker_compose

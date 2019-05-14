@@ -1,0 +1,28 @@
+# common vars
+availability_zone: melbourne-qh2-uom
+
+# Volume
+volumes:
+  - vol_name: Twitter_Harvest_Vol
+    vol_size: 30
+
+# Security group
+security_groups:
+  - name: ssh
+    description: "Security group for SSH access"
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+  - name: http
+    description: "Security group for HTTP"
+    protocol: tcp
+    port_range_min: 80
+    port_range_max: 3000
+    remote_ip_prefix: 0.0.0.0/0
+
+instance_name: Twitter_Harvest_App_2
+instance_image: afccf48a-9426-4618-86dc-0ceb636f0169
+# instance_image: 955a0556-1224-4499-a895-87d54d5cbf32
+instance_key_name: myKey
+instance_flavor: uom.mse.2c9g
