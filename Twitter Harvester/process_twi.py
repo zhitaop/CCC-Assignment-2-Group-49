@@ -8,6 +8,83 @@ import couchdb
 import create_view
 import numpy as np
 import os
+import random
+
+lga_coordinates = [
+    [144.9436708724537, -37.81071454646296],  # Melbourne
+    [144.9660383582063, -37.85220035716027],  # Port Phillip
+    [145.033638640678,- 37.85795059419824],  # Stonnington
+    [144.9985270648188, -37.80226806140895],  # Yarra
+    [145.0851374567692, -37.73037084082312],  # Banyule
+    [145.0179708456197, -37.94168038210734],  # Bayside
+    [145.063093351917, -37.819292999541],  # Boroondara
+    [144.8033088163138, -37.7475527857568],  # Brimbank
+    [145.0143361006927, -37.73346198925955],  # Darebin
+    [145.0426027099654, -37.90120587623827],  # Glen Eira
+    [144.8300263113892, -37.8546890641181],  # Hobsons Bay
+    [145.1051027642337, -37.98866932623822],  # Kingston
+    [145.1885678960027, -37.76158520614524],  # Manningham
+    [144.8777693651151, -37.79527966838285],  # Maribyrnong
+    [145.1440336768838, -37.89714304214255],  # Monash
+    [144.8957591954861, -37.74952121591947],  # Moonee Valley
+    [144.9488194951094, -37.72984049212152],  # Moreland
+    [145.1550568018552, -37.83024801561037],  # Whitehorse
+    [145.572664776398, -38.08305303754749],  # Shire of Cardinia
+    [145.3092984633363, -38.10028048292309],  # Casey
+    [145.1737366635034, -38.13466424895159],  # Frankston
+    [145.1900119338524, -38.00565130989552],  # Greater Dandenong
+    [144.824627290565, -37.58916543350263],  # Hume
+    [145.2586574542673, -37.88896083357653],  # Knox
+    [145.265259897546, -37.80486733918201],  # Maroondah
+    [144.6260213945261, -37.69295990975532],  # Melton
+    [145.0354047970413, -38.34194215786155],  # Shire of Mornington Peninsula
+    [145.2368568178074, -37.62289507918575],  # Shire of Nillumbik
+    [145.0776840855983, -37.54719935448867],  # Whittlesea
+    [144.6182493677213, -37.88665897514785],  # Wyndham
+    [145.6969471178653, -37.71425616183905]  # Shire of Yarra Ranges
+]
+
+lga_population = [
+    135959,  # Melbourne
+    100863,  # Port Phillip
+    103832,  # Stonnington
+    86657,  # Yarra
+    121865,  # Banyule
+    97087,  # Bayside
+    167231,  # Boroondara
+    194319,  # Brimbank
+    146719,  # Darebin
+    140875,  # Glen Eira
+    88778,  # Hobsons Bay
+    151389,  # Kingston
+    116255,  # Manningham
+    82288,  # Maribyrnong
+    182618,  # Monash
+    116671,  # Moonee Valley
+    162558,  # Moreland
+    162078,  # Whitehorse
+    94128,  # Shire of Cardinia
+    299301,  # Casey
+    134143,  # Frankston
+    152050,  # Greater Dandenong
+    194376,  # Hume
+    154110,  # Knox
+    110376,  # Maroondah
+    135443,  # Melton
+    154999,  # Shire of Mornington Peninsula
+    61273,  # Shire of Nillumbik
+    197491,  # Whittlesea
+    217122,  # Wyndham
+    149537  # Shire of Yarra Ranges
+]
+
+total_population = 0
+for num in lga_population:
+    total_population += num
+
+lga_prob = []
+for num in lga_population:
+    lga_prob.append(num / float(total_population))
 
 class TweetProcesser:
 
@@ -42,17 +119,6 @@ class TweetProcesser:
         twi_text = re.sub('\.', ' ', twi_text)
         return twi_text
 
-
-    def read_twi_coors__2(self, record):
-        coordinate = record['coordinates']
-        place = record['place']
-        if coordinate:
-            return coordinate['coordinates']
-        elif place:
-            coordinate = record['place']['bounding_box']['coordinates'][0][0]
-            return coordinate
-        return None
-
     def read_twi_coors(self, record):
         coordinate = record['coordinates']
         if coordinate:
@@ -60,9 +126,9 @@ class TweetProcesser:
         elif record['place']:
             # if place == 'Melbourne, melbourne's coordinate is assigned
             if record['place']['id'] == '01864a8a64df9dc4':
-                coordinate = [144.96332, -37.814]
+                coordinate = random.choices(population=lga_coordinates, weights=lga_prob, k=1)[0]
                 return coordinate
-            else:
+            elif record['place']['bounding_box']:
                 coor_list = record['place']['bounding_box']['coordinates'][0]
                 coordinate = np.sum([coor_list[0], coor_list[1], coor_list[2], coor_list[3]], axis=0) / 4
                 return coordinate.tolist()

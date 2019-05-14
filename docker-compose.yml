@@ -1,7 +1,8 @@
 version: "3"
 services:
   harvest:
-    build: ./Twitter Harvester/    
+    build: ./Twitter Harvester/
+    restart: always    
     depends_on:
       - db
     volumes:
@@ -15,6 +16,7 @@ services:
         - HTTPS_PROXY=http://wwwproxy.unimelb.edu.au:8000
     depends_on:
       - db
+    restart: always
     volumes:
       - ./webapp:/app
     ports:
@@ -22,6 +24,7 @@ services:
     
   db:
     image: couchdb:latest
+    restart: always
     ports:
       - "5984:5984"
     volumes:
