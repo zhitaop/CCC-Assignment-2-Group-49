@@ -1,0 +1,6 @@
+tweepy
+couchdb
+nltk
+shapely
+vaderSentiment
+numpy

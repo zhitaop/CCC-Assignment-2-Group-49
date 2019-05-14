@@ -22,7 +22,7 @@ class TwitterStreamListener(StreamListener):
 
     def __init__(self):
         self.tweet_processer = TweetProcesser(user, password, processed_dbname)
-        self.couchserver = couchdb.Server('http://127.0.0.1:5984')
+        self.couchserver = couchdb.Server('http://db:5984')
         #self.couchserver = couchdb.Server(f'http://{user}:{password}@127.0.0.1:5984')
         if dbname in self.couchserver:
             self.db = self.couchserver[dbname]
