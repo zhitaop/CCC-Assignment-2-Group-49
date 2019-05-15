@@ -8,6 +8,9 @@ Yi Lu 917371
 Yumika Suzuki 1011143  
 Zhitao Pan 844505  
 
+The HTML to display: http://172.26.38.22:3000/
+Video in Youtube: https://www.youtube.com/watch?v=oB75Sajpp_E&feature=youtu.be
+
 To deploy the system, follow the steps:
 * Clone this repository and go to the deployment folder
 *	Login to Unimelb Research Cloud, navigate to user => OpenStack RC File and download the file to the current folder. Rename the file to openrc.sh
