@@ -10,7 +10,7 @@ Zhitao Pan 844505
 
 The HTML to display: http://172.26.38.22:3000/
 
-Video in Youtube: https://www.youtube.com/watch?v=oB75Sajpp_E&feature=youtu.be
+Video in Youtube: https://youtu.be/Q4E8LkG9al0
 
 To deploy the system, follow the steps:
 * Clone this repository and go to the deployment folder
